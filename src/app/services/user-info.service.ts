@@ -1,38 +1,43 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpParams,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { UserList } from '../models';
-import { tap, retry, finalize, switchAll, catchError} from 'rxjs/operators';
+import { tap, retry, finalize, switchAll, catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserInfoService {
-  apiUrl:string = 'https://api.github.com/search/users';
+  apiUrl = 'https://api.github.com/search/users';
 
   constructor(private http: HttpClient) {}
 
   getUserInfo(word: string, showloadFunc, hideLoadFunc): Observable<UserList> {
     const params = new HttpParams().set('q', word);
 
-    return this.http.get<UserList>(this.apiUrl, { params })
+    return this.http
+      .get<UserList>(this.apiUrl, { params })
       .pipe(
         tap(showloadFunc),
         catchError(this.handleError),
         switchAll<UserList>(),
         tap(hideLoadFunc),
         retry(2),
-        finalize(hideLoadFunc),
-      )
+        finalize(hideLoadFunc)
+      );
   }
 
-  private handleError(error: HttpErrorResponse){
-    let message: string = '';
+  private handleError(error: HttpErrorResponse) {
+    let message = '';
     // client 에러
-    if(error.error instanceof ErrorEvent){
+    if (error.error instanceof ErrorEvent) {
       console.error(`Client-side error: ${error.error.message}`);
       message = error.error.message;
-    }else{
+    } else {
       // server 에러
       console.error(`Server-side error: ${error.status}`);
       message = error.message;
@@ -40,7 +45,7 @@ export class UserInfoService {
 
     return throwError({
       title: 'sorry, something wrong',
-      message
-    })
+      message,
+    });
   }
 }
