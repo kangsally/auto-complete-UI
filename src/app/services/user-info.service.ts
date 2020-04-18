@@ -5,7 +5,7 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { UserList } from '../models';
-import { tap, retry, finalize, switchAll, catchError } from 'rxjs/operators';
+import { tap, retry, finalize, switchAll, catchError, switchMap } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 @Injectable({
@@ -16,18 +16,11 @@ export class UserInfoService {
 
   constructor(private http: HttpClient) {}
 
-  getUserInfo(word: string, showloadFunc, hideLoadFunc): Observable<UserList> {
+  getUserInfo(word: any): Observable<UserList> {
     const params = new HttpParams().set('q', word);
-
-    return this.http
-      .get<UserList>(this.apiUrl, { params })
+    return this.http.get<UserList>(this.apiUrl, { params })
       .pipe(
-        tap(showloadFunc),
         catchError(this.handleError),
-        switchAll<UserList>(),
-        tap(hideLoadFunc),
-        retry(2),
-        finalize(hideLoadFunc)
       );
   }
 
