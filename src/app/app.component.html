@@ -17,8 +17,8 @@
       </ul>
     </div>
   </div>
-  <div class="profile-container">
-    <img [src]="selectedUser?.avatar_url" />
+  <div class="profile-container" #profileBox>
+    <img [src]="selectedUser?.avatar_url" #profileImage (load)="loadImage(profileBox)"/>
     <p>
       <a [href]="selectedUser?.html_url" target="_blank">{{ selectedUser?.login }}</a>
     </p>

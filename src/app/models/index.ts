@@ -26,7 +26,7 @@ export interface User {
   score: number;
 }
 
-export interface selectedUser{
+export interface SelectedUser{
   login: string;
   avatar_url: string;
   html_url: string;

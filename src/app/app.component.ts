@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { User, selectedUser, UserList } from './models';
+import { User, SelectedUser, UserList } from './models';
 import { fromEvent, Observable } from 'rxjs';
 import {
   debounceTime,
@@ -29,9 +29,11 @@ import { UserInfoService } from './services/user-info.service';
 export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('searchInput')
   input: ElementRef;
+  @ViewChild('profileBox')
+  profileBox: ElementRef;
   users: User[];
   isLoading = false;
-  selectedUser: selectedUser;
+  selectedUser: SelectedUser;
   message = '';
 
   constructor(private userInfoService: UserInfoService) {}
@@ -79,14 +81,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   selectUser(id, imgUrl, githubUrl): void {
+    if (this.profileBox) {
+      this.profileBox.nativeElement.style.visibility = 'hidden';
+    }
     this.selectedUser = {
       login: id,
       avatar_url: imgUrl,
-      html_url: githubUrl,
-    }
+      html_url: githubUrl
+    };
   }
 
-  private handleError(error, observable: Observable<UserList>) {
+  private handleError(error, observable: Observable<UserList>): Observable<UserList>{
     if (error.error instanceof ErrorEvent) {
       this.isLoading = false;
       this.message = 'Please try again in a moment.';
@@ -96,5 +101,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     return observable;
+  }
+
+  loadImage(profileBox: HTMLDivElement): void{
+    if (profileBox) {
+      profileBox.style.visibility = 'initial';
+    }
   }
 }

@@ -18,7 +18,7 @@ export class UserInfoService {
 
   getUserInfo(word: any): Observable<UserList> {
     const params = new HttpParams().set('q', word);
-    return this.http.get<UserList>(this.apiUrl, { params })
+    return this.http.get<UserList>(this.apiUrl, { params });
       // .pipe(
       //   catchError(this.handleError),
       // );
