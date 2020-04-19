@@ -1,12 +1,27 @@
-<p>사용자 검색</p>
 <div class="container">
-  <input #searchInput class="search" type="input" placeholder="검색하고 싶은 사용자 아이디를 입력해주세요" />
-  <ul class="suggest-layer">
-    <li *ngFor="let user of users" class="user">
-      <img [src]="user.avatar_url" />
-      <p><a [href]="user.html_url" target="_blank">{{user.login}}</a></p>
-    </li>s
-  </ul>
+  <div class="search-container">
+    <p>Github User Search</p>
+    <div>
+      <input
+        #searchInput
+        class="search"
+        type="input"
+        placeholder="검색하고 싶은 사용자 아이디를 입력 후 클릭해주세요."
+      />
+      <div *ngIf="isLoading">로딩중</div>
+      <ul class="suggest-layer">
+        <li *ngFor="let user of users" class="user" (click)="selectUser(user.login, user.avatar_url, user.html_url)">
+          {{ user.login }}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="profile-container">
+    <img [src]="selectedUser?.avatar_url" />
+    <p>
+      <a [href]="selectedUser?.html_url" target="_blank">{{ selectedUser?.login }}</a>
+    </p>
+  </div>
 </div>
 
 <!-- <router-outlet></router-outlet> -->

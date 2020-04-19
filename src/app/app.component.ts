@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { UserList, User } from './models';
+import { User, selectedUser } from './models';
 import { fromEvent } from 'rxjs';
 import {
   debounceTime,
@@ -30,6 +30,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   input: ElementRef;
   users: User[];
   isLoading = false;
+  selectedUser: selectedUser;
 
   constructor(private userInfoService: UserInfoService) {}
   ngOnInit(): void {}
@@ -49,16 +50,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     );
 
     user$.pipe(
-      tap(() => console.log('로딩시작')),
+      tap(() => this.showLoading),
       switchMap(word => {
         return this.userInfoService.getUserInfo(word);
       }),
-      tap(() => console.log('로딩끝')),
+      tap(() => this.hideLoading),
       retry(2),
       finalize(this.hideLoading)
     )
     .subscribe(userInfo => {
       this.users = userInfo.items;
+    },
+    (error) => {
+      console.log('1', error);
     });
 
     reset$.pipe(tap(() => (this.users = []))).subscribe();
@@ -70,5 +74,13 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   hideLoading(): void {
     this.isLoading = false;
+  }
+
+  selectUser(id, imgUrl, githubUrl): void {
+    this.selectedUser = {
+      login: id,
+      avatar_url: imgUrl,
+      html_url: githubUrl,
+    }
   }
 }

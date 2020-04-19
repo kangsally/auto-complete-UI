@@ -25,3 +25,9 @@ export interface User {
   site_admin: boolean;
   score: number;
 }
+
+export interface selectedUser{
+  login: string;
+  avatar_url: string;
+  html_url: string;
+}

@@ -24,7 +24,7 @@ export class UserInfoService {
       );
   }
 
-  private handleError(error: HttpErrorResponse) {
+  private handleError(error: HttpErrorResponse, observable: Observable<UserList>) {
     let message = '';
     // client 에러
     if (error.error instanceof ErrorEvent) {
@@ -36,9 +36,10 @@ export class UserInfoService {
       message = error.message;
     }
 
-    return throwError({
-      title: 'sorry, something wrong',
-      message,
-    });
+    return observable;
+    // return throwError({
+    //   title: 'sorry, something wrong',
+    //   message,
+    // });
   }
 }
