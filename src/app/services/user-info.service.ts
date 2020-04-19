@@ -19,27 +19,27 @@ export class UserInfoService {
   getUserInfo(word: any): Observable<UserList> {
     const params = new HttpParams().set('q', word);
     return this.http.get<UserList>(this.apiUrl, { params })
-      .pipe(
-        catchError(this.handleError),
-      );
+      // .pipe(
+      //   catchError(this.handleError),
+      // );
   }
 
-  private handleError(error: HttpErrorResponse, observable: Observable<UserList>) {
-    let message = '';
-    // client 에러
-    if (error.error instanceof ErrorEvent) {
-      console.error(`Client-side error: ${error.error.message}`);
-      message = error.error.message;
-    } else {
-      // server 에러
-      console.error(`Server-side error: ${error.status}`);
-      message = error.message;
-    }
+  // private handleError(error: HttpErrorResponse, observable: Observable<UserList>) {
+  //   let message = '';
+  //   // client 에러
+  //   if (error.error instanceof ErrorEvent) {
+  //     console.error(`Client-side error: ${error.error.message}`);
+  //     message = error.error.message;
+  //   } else {
+  //     // server 에러
+  //     console.error(`Server-side error: ${error.status}`);
+  //     message = error.message;
+  //   }
 
-    return observable;
-    // return throwError({
-    //   title: 'sorry, something wrong',
-    //   message,
-    // });
-  }
+  //   return observable;
+  //   // return throwError({
+  //   //   title: 'sorry, something wrong',
+  //   //   message,
+  //   // });
+  // }
 }

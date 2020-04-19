@@ -20,6 +20,10 @@
       align-items: center;
       margin-top: 20px;
 
+      .error{
+        color: red;
+      }
+
       input {
         width: 400px;
         height: 30px;

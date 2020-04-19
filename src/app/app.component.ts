@@ -5,8 +5,8 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { User, selectedUser } from './models';
-import { fromEvent } from 'rxjs';
+import { User, selectedUser, UserList } from './models';
+import { fromEvent, Observable } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -16,7 +16,8 @@ import {
   partition,
   retry,
   finalize,
-  switchMap
+  switchMap,
+  catchError
 } from 'rxjs/operators';
 import { UserInfoService } from './services/user-info.service';
 
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   users: User[];
   isLoading = false;
   selectedUser: selectedUser;
+  message = '';
 
   constructor(private userInfoService: UserInfoService) {}
   ngOnInit(): void {}
@@ -40,7 +42,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       debounceTime(300),
       map((event) => event.target.value),
       distinctUntilChanged(),
-      tap((word) => console.log(word)),
       share()
     );
 
@@ -50,19 +51,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     );
 
     user$.pipe(
-      tap(() => this.showLoading),
+      tap(this.showLoading.bind(this)),
       switchMap(word => {
+        this.message = '';
+        this.users = [];
         return this.userInfoService.getUserInfo(word);
       }),
-      tap(() => this.hideLoading),
-      retry(2),
-      finalize(this.hideLoading)
+      tap(this.hideLoading.bind(this)),
+      catchError(this.handleError.bind(this)),
     )
     .subscribe(userInfo => {
       this.users = userInfo.items;
     },
     (error) => {
-      console.log('1', error);
+      this.message = 'Please refresh this page.';
     });
 
     reset$.pipe(tap(() => (this.users = []))).subscribe();
@@ -82,5 +84,17 @@ export class AppComponent implements OnInit, AfterViewInit {
       avatar_url: imgUrl,
       html_url: githubUrl,
     }
+  }
+
+  private handleError(error, observable: Observable<UserList>) {
+    if (error.error instanceof ErrorEvent) {
+      this.isLoading = false;
+      this.message = 'Please try again in a moment.';
+    } else {
+      this.isLoading = false;
+      this.message = 'Please try again in a moment.';
+    }
+
+    return observable;
   }
 }

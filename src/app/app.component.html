@@ -2,13 +2,14 @@
   <div class="search-container">
     <p>Github User Search</p>
     <div>
+      <div class="error">{{message}}</div>
       <input
         #searchInput
         class="search"
         type="input"
         placeholder="검색하고 싶은 사용자 아이디를 입력 후 클릭해주세요."
       />
-      <div *ngIf="isLoading">로딩중</div>
+      <div *ngIf="isLoading">loading..</div>
       <ul class="suggest-layer">
         <li *ngFor="let user of users" class="user" (click)="selectUser(user.login, user.avatar_url, user.html_url)">
           {{ user.login }}
